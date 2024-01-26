@@ -1,0 +1,31 @@
+* daisy
+
+[[https://hackage.haskell.org/package/{{{name}}}][https://img.shields.io/hackage/v/daisy.svg]]
+[[https://github.com/{{{github-username}}}/{{{name}}}/actions?query=workflow%3Ahaskell-ci][https://github.com/tonyday567/daisy/workflows/haskell-ci/badge.svg]]
+
+Daisy World
+
+* Usage
+
+#+begin_src haskell :results output
+import Daisy
+#+end_src
+
+* Development
+
+#+begin_src haskell-ng :results output
+:set -Wno-type-defaults
+:set -Wno-name-shadowing
+:set -XOverloadedStrings
+import Chart
+import Chart.Examples
+import Prettychart
+(sendChart, quitChartServer) <- startChartServer (Just "daisy")
+#+end_src
+
+check
+
+#+begin_src haskell-ng :results output :export both
+let x = "ok"
+putStrLn x
+#+end_src

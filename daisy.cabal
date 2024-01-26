@@ -1,0 +1,28 @@
+cabal-version: 3.0
+name: daisy
+version: 0.0.0.1
+license: BSD-2-Clause
+license-file: LICENSE
+build-type: Simple
+extra-doc-files:
+    ChangeLog.md
+    readme.org
+
+common ghc-options-stanza
+    ghc-options:
+        -Wall
+        -Wcompat
+        -Wincomplete-record-updates
+        -Wincomplete-uni-patterns
+        -Wredundant-constraints
+
+library
+    import: ghc-options-stanza
+    default-language: GHC2021
+    hs-source-dirs: src
+    build-depends:
+        , base        >=4.14 && <5
+        , chart-svg
+        , numhask
+        , prettychart
+    exposed-modules: Daisy
