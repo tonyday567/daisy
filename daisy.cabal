@@ -25,4 +25,5 @@ library
         , chart-svg
         , numhask
         , prettychart
+        , optics-core
     exposed-modules: Daisy

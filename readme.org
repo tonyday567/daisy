@@ -14,18 +14,125 @@ import Daisy
 * Development
 
 #+begin_src haskell-ng :results output
+:r
 :set -Wno-type-defaults
 :set -Wno-name-shadowing
 :set -XOverloadedStrings
+:set -XOverloadedLabels
+import Optics.Core
 import Chart
+import Daisy
 import Chart.Examples
 import Prettychart
 (sendChart, quitChartServer) <- startChartServer (Just "daisy")
 #+end_src
 
+#+RESULTS:
+#+begin_example
+Build profile: -w ghc-9.4.8 -O1
+In order, the following will be built (use -v for more details):
+ - daisy-0.0.0.1 (lib) (file src/Daisy.hs changed)
+Preprocessing library for daisy-0.0.0.1..
+GHCi, version 9.4.8: https://www.haskell.org/ghc/  :? for help
+Loaded GHCi configuration from /Users/tonyday567/haskell/daisy/.ghci
+[1 of 1] Compiling Daisy            ( src/Daisy.hs, interpreted )
+
+src/Daisy.hs:75:45: warning: [-Wname-shadowing]
+    This binding for ‘gwb'’ shadows the existing binding
+      bound at src/Daisy.hs:78:5
+   |
+75 |     k' = fmap (dt cfg *) (alphaDot cfg t ((\gwb' gwbk -> gwb' + 0.5 * gwbk) <$> gwb <*> k))
+   |                                             ^^^^
+
+src/Daisy.hs:76:46: warning: [-Wname-shadowing]
+    This binding for ‘gwb'’ shadows the existing binding
+      bound at src/Daisy.hs:78:5
+   |
+76 |     k'' = fmap (dt cfg *) (alphaDot cfg t ((\gwb' gwbk -> gwb' + 0.5 * gwbk) <$> gwb <*> k'))
+   |                                              ^^^^
+
+src/Daisy.hs:77:47: warning: [-Wname-shadowing]
+    This binding for ‘gwb'’ shadows the existing binding
+      bound at src/Daisy.hs:78:5
+   |
+77 |     k''' = fmap (dt cfg *) (alphaDot cfg t ((\gwb' gwbk -> gwb' + 1 * gwbk) <$> gwb <*> k''))
+   |                                               ^^^^
+Ok, one module loaded.
+Ok, one module loaded.
+Setting phasers to stun... (port 9160) (ctrlg-hcc it>o  quit)
+#+end_example
+
+
+
 check
 
 #+begin_src haskell-ng :results output :export both
-let x = "ok"
-putStrLn x
+
+cfg = defaultConfig
+as = take 1000 $ alphas defaultConfig
+b = tempB cfg . resTime <$> as
+p = tempP cfg <$> as
+a = (1000*) . albedoP cfg . resAlpha <$> as
+sendChart $ mempty & set #hudOptions defaultHudOptions & set #chartTree (unnamed [simpleLineChart 0.01 (palette 0) a])
+-- tempP cfg <$> (take 2 $ drop 100 $ alphas defaultConfig)
+-- tempB cfg . resTime <$> (take 2 $ drop 100 $ alphas defaultConfig)
 #+end_src
+
+#+RESULTS:
+: True
+
+#+begin_src haskell-ng :results output :export both
+cfg = defaultConfig
+as = take 1000 $ alphas defaultConfig
+b = tempB cfg . resTime <$> as
+p = tempP cfg <$> as
+a = (1000*) . albedoP cfg . resAlpha <$> as
+aW = (1000*) . w . resAlpha <$> as
+aB = (1000*) . b . resAlpha <$> as
+sendChart $ mempty & set #hudOptions defaultHudOptions & set #chartTree (unnamed [simpleLineChart 0.01 (palette 0) aW, simpleLineChart 0.01 (palette 1) aB])
+-- tempP cfg <$> (take 2 $ drop 100 $ alphas defaultConfig)
+-- tempB cfg . resTime <$> (take 2 $ drop 100 $ alphas defaultConfig)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+<interactive>:118:16: error:
+    • Couldn't match expected type: GWB Double -> b
+                  with actual type: [Double]
+    • In the first argument of ‘(.)’, namely ‘b’
+      In the second argument of ‘(.)’, namely ‘b . resAlpha’
+      In the first argument of ‘(<$>)’, namely ‘(1000 *) . b . resAlpha’
+    • Relevant bindings include
+        aB :: [b] (bound at <interactive>:118:1)
+<interactive>:119:153: error:
+    Variable not in scope: aB :: [Double]
+    Suggested fix:
+      Perhaps use one of these:
+        ‘Ghci27.a’ (imported from Ghci27),
+        ‘Ghci36.a’ (imported from Ghci36),
+        ‘Ghci43.a’ (imported from Ghci43)
+#+end_example
+
+#+begin_src haskell-ng :results output
+a
+#+end_src
+
+#+RESULTS:
+: [0.5,0.49999997467155743,0.49999990188362,0.49999978574945975,0.4999996298908774,0.49999943750299825,0.49999921141051523,0.49999895411661943,0.4999986678456759,0.49999835458053576,0.4999980160952448,0.4999976539837949,0.49999726968546815,0.499996864507243,0.4999964396436652,0.49999599619452517,0.4999955351806372,0.49999505755797086,0.4999945642303523,0.49999405606091907,0.4999935338824886,0.49999299850697587,0.4999924507339765,0.4999918913586168,0.49999132117875394,0.49999074100159946,0.4999901516498289,0.49998955396722683,0.49998894882391315,0.499988337121185,0.49998771979600476,0.49998709782515716,0.49998647222909476,0.49998584407548585,0.499985214482475,0.4999845846216628,0.4999839557208086,0.4999833290662573,0.4999827060050881,0.49998208794698135,0.49998147636579915,0.4999808728008708,0.4999802788579749,0.4999796962100095,0.49997912659733745,0.4999785718277976,0.4999780337763677,0.49997751438446836,0.4999770156588946,0.49997653967036215,0.49997608855165776,0.49997566449537945,0.49997526975125767,0.4999749066230454,0.4999745774649688,0.49997428467773,0.4999740307040542,0.4999738180237788,0.49997364914847714,0.499973526615619,0.4999734529822666,0.49997343081830936,0.4999734626992439,0.4999735511985056,0.4999736988793645,0.4999739082863975,0.49997418193655524,0.49997452230984174,0.4999749318396319,0.49997541290265063,0.49997596780864567,0.49997659878978506,0.49997730798981604,0.4999780974530249,0.49997896911304074,0.49997992478152764,0.49998096613681503,0.49998209471251776,0.4999833118862,0.499984618868139,0.4999860166902497,0.49998750619522936,0.4999890880259854,0.49999076261541203,0.4999925301765788,0.4999943906933988,0.4999963439118413,0.4999983893317564,0.5000005261993757,0.5000027535005548,0.5000050699548202,0.5000074740102808,0.500009963839465,0.5000125373361373,0.5000151921131458,0.5000179255013527,0.5000207345496884,0.5000236160263699,0.5000265664213183,0.5000295819498013]
+
+#+begin_src haskell-ng :results output
+cfg = defaultConfig
+albedoP cfg (x0 cfg)
+tP cfg 2 (x0 cfg)
+#+end_src
+
+#+RESULTS:
+: 0.5
+: -7.767385807555797
+
+ #+begin_src haskell-ng :results output
+ sendChart unitExample
+ #+end_src
+
+ #+RESULTS:
+ : True
