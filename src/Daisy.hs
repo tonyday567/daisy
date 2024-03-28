@@ -69,13 +69,13 @@ alphaDot cfg t alpha = GWB g' w' b'
 data Results = Results { resTime :: Double, resAlpha :: GWB Double} deriving (Eq, Show, Generic)
 
 runge :: Config -> Results -> Results
-runge cfg (Results t gwb) = Results (t+1) gwb'
+runge cfg (Results t gwb) = Results (t+1) gwbIntegrated
   where
     k = fmap (dt cfg *) (alphaDot cfg t gwb)
     k' = fmap (dt cfg *) (alphaDot cfg t ((\gwb' gwbk -> gwb' + 0.5 * gwbk) <$> gwb <*> k))
     k'' = fmap (dt cfg *) (alphaDot cfg t ((\gwb' gwbk -> gwb' + 0.5 * gwbk) <$> gwb <*> k'))
     k''' = fmap (dt cfg *) (alphaDot cfg t ((\gwb' gwbk -> gwb' + 1 * gwbk) <$> gwb <*> k''))
-    gwb' = (\x0 x1 x2 x3 x4 -> x0 + (x1 + 2 * x2 + 2 * x3 + x4) / 6) <$> gwb <*> k <*> k' <*> k'' <*> k'''
+    gwbIntegrated = (\x0 x1 x2 x3 x4 -> x0 + (x1 + 2 * x2 + 2 * x3 + x4) / 6) <$> gwb <*> k <*> k' <*> k'' <*> k'''
 
 tempP :: Config -> Results -> Double
 tempP cfg x = (s cfg * l cfg (resTime x) * (1 - albedoP cfg (resAlpha x))/sigma cfg) ** 0.25 - 273

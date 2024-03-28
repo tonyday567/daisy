@@ -24,50 +24,36 @@ import Chart
 import Daisy
 import Chart.Examples
 import Prettychart
-(sendChart, quitChartServer) <- startChartServer (Just "daisy")
+(display, quit) <- startChartServer (Just "daisy")
 #+end_src
 
 #+RESULTS:
 #+begin_example
 Build profile: -w ghc-9.4.8 -O1
 In order, the following will be built (use -v for more details):
- - daisy-0.0.0.1 (lib) (file src/Daisy.hs changed)
+ - daisy-0.0.0.1 (lib) (ephemeral targets)
 Preprocessing library for daisy-0.0.0.1..
 GHCi, version 9.4.8: https://www.haskell.org/ghc/  :? for help
 Loaded GHCi configuration from /Users/tonyday567/haskell/daisy/.ghci
 [1 of 1] Compiling Daisy            ( src/Daisy.hs, interpreted )
-
-src/Daisy.hs:75:45: warning: [-Wname-shadowing]
-    This binding for ‘gwb'’ shadows the existing binding
-      bound at src/Daisy.hs:78:5
-   |
-75 |     k' = fmap (dt cfg *) (alphaDot cfg t ((\gwb' gwbk -> gwb' + 0.5 * gwbk) <$> gwb <*> k))
-   |                                             ^^^^
-
-src/Daisy.hs:76:46: warning: [-Wname-shadowing]
-    This binding for ‘gwb'’ shadows the existing binding
-      bound at src/Daisy.hs:78:5
-   |
-76 |     k'' = fmap (dt cfg *) (alphaDot cfg t ((\gwb' gwbk -> gwb' + 0.5 * gwbk) <$> gwb <*> k'))
-   |                                              ^^^^
-
-src/Daisy.hs:77:47: warning: [-Wname-shadowing]
-    This binding for ‘gwb'’ shadows the existing binding
-      bound at src/Daisy.hs:78:5
-   |
-77 |     k''' = fmap (dt cfg *) (alphaDot cfg t ((\gwb' gwbk -> gwb' + 1 * gwbk) <$> gwb <*> k''))
-   |                                               ^^^^
 Ok, one module loaded.
 Ok, one module loaded.
-Setting phasers to stun... (port 9160) (ctrlg-hcc it>o  quit)
+Setting phasers to stun... (port 9160) g(hcctir>l -c to quit)
 #+end_example
+
+
+#+begin_src haskell-ng :results output
+display unitExample
+#+end_src
+
+#+RESULTS:
+: True
 
 
 
 check
 
 #+begin_src haskell-ng :results output :export both
-
 cfg = defaultConfig
 as = take 1000 $ alphas defaultConfig
 b = tempB cfg . resTime <$> as
@@ -136,3 +122,8 @@ tP cfg 2 (x0 cfg)
 
  #+RESULTS:
  : True
+
+
+* reference
+
+  https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
